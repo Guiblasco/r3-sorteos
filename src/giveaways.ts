@@ -21,7 +21,7 @@ export function loginUser(email: string, password: string): void {
     process.exit(0);
   }
 }
-export function createGiveaway() {
+export function createGiveaway(): void {
   const giveawayData = askUserNewGiveawayData();
   const newGiveaway: Giveaway = {
     name: giveawayData.giveawayName,
@@ -34,7 +34,7 @@ export function createGiveaway() {
   saveData();
 }
 
-export function listGiveaways() {
+export function listGiveaways(): void {
   if (!programData.giveaways) {
     console.log("No hay sorteos disponibles");
   } else {
@@ -63,7 +63,7 @@ export function listGiveaways() {
     }
   }
 }
-export function deleteGiveaway(giveawayNumber: number) {
+export function deleteGiveaway(giveawayNumber: number): void {
   if (giveawayNumber > programData.giveaways.length) {
     console.log("No existe este sorteo");
   } else {
@@ -94,7 +94,7 @@ export function enterGiveaway(enterGiveawayNumber: number) {
   }
 }
 
-export function listUserGiveaways() {
+export function listUserGiveaways(): void {
   const arrayGiveaways: Giveaway[] = [];
   for (const giveaway of programData.giveaways) {
     for (const participant of giveaway.participants) {
