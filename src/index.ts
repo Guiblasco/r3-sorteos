@@ -1,14 +1,12 @@
 import { askUser, askUserHidden } from "./askUser.js";
-// import { loginUser } from "./giveaways.js";
+import { loginUser } from "./giveaways.js";
 
-import { loadData } from "./storage.js";
+import { loadData, programData, saveData } from "./storage.js";
 import { printMainMenu } from "./ui.js";
 
 const email = askUser("Introduce tu email: ");
 const password = askUserHidden("Introduce tu contraseña: ");
-
 loadData();
 
-// loginUser(email, password);
-
+loginUser(email, password);
 printMainMenu();
