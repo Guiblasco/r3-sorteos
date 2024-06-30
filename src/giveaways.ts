@@ -30,6 +30,7 @@ export function createGiveaway() {
     socialNetwork: giveawayData.giveawaySocialNetwork,
     participants: [],
   };
+  console.log(`Sorteo creado con éxito`);
 
   programData.giveaways.push(newGiveaway);
   saveData();
@@ -40,7 +41,11 @@ export function listGiveaways() {
     console.log("No hay sorteos disponibles");
   } else {
     console.log(
-      "Estos son los " + programData.giveaways.length + " sorteos disponibles"
+      programData.giveaways.length == 1
+        ? "Este es el " + programData.giveaways.length + " sorteo disponible"
+        : "Estos son los " +
+            programData.giveaways.length +
+            " sorteos disponibles"
     );
     for (
       let giveaway = 0;
@@ -56,5 +61,14 @@ export function listGiveaways() {
           programData.giveaways[giveaway].socialNetwork
       );
     }
+  }
+}
+export function deleteGiveaway(giveawayNumber: number) {
+  if (giveawayNumber > programData.giveaways.length) {
+    console.log("No existe este sorteo");
+  } else {
+    programData.giveaways.splice(giveawayNumber - 1, 1);
+    console.log(`Sorteo ${giveawayNumber} eliminado con éxito`);
+    saveData();
   }
 }
