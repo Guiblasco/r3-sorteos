@@ -6,7 +6,7 @@ import { printMainMenu } from "./ui.js";
 
 const email = askUser("Introduce tu email: ");
 const password = askUserHidden("Introduce tu contraseña: ");
-loadData();
 
+loadData();
 loginUser(email, password);
 printMainMenu();
