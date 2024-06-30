@@ -17,18 +17,44 @@ export function loginUser(email: string, password: string) {
     if (user.email == "admin@admin.com") {
       programData.isAdmin = true;
     }
+    saveData();
   } else {
     console.log("El usuario no coincide con los usuarios registrados");
     exitProcess(0);
   }
 }
 export function createGiveaway() {
-  const recoveredData = askUserNewGiveawayData();
+  const giveawayData = askUserNewGiveawayData();
   const newGiveaway: Giveaway = {
-    name: recoveredData.giveawayName,
-    socialNetwork: recoveredData.giveawaySocialNetwork,
+    name: giveawayData.giveawayName,
+    socialNetwork: giveawayData.giveawaySocialNetwork,
     participants: [],
   };
 
   programData.giveaways.push(newGiveaway);
+  saveData();
+}
+
+export function listGiveaways() {
+  if (!programData.giveaways) {
+    console.log("No hay sorteos disponibles");
+  } else {
+    console.log(
+      "Estos son los " + programData.giveaways.length + " sorteos disponibles"
+    );
+    for (
+      let giveaway = 0;
+      giveaway < programData.giveaways.length;
+      giveaway++
+    ) {
+      console.log(
+        giveaway +
+          1 +
+          ". Sorteo de un " +
+          programData.giveaways[giveaway].name +
+          " en " +
+          programData.giveaways[giveaway].socialNetwork
+      );
+    }
+  }
 }
