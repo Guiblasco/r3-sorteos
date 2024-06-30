@@ -73,7 +73,9 @@ export function enterGiveaway(enterGiveawayNumber: number) {
   if (enterGiveawayNumber > programData.giveaways.length) {
     console.log("No existe este sorteo");
   } else {
-    const user = programData.users.find((user) => programData.userEmail);
+    const user = programData.users.find(
+      (user) => user.email === programData.userEmail
+    );
     if (user) {
       programData.giveaways[enterGiveawayNumber].participants.push(user);
     }
