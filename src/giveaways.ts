@@ -12,6 +12,8 @@ export function loginUser(email: string, password: string): void {
     programData.userEmail = email;
     if (user.email === "admin@admin.com") {
       programData.isAdmin = true;
+    } else {
+      programData.isAdmin = false;
     }
     saveData();
   } else {
@@ -37,11 +39,13 @@ export function listGiveaways() {
     console.log("No hay sorteos disponibles");
   } else {
     console.log(
-      programData.giveaways.length == 1
-        ? "Este es el " + programData.giveaways.length + " sorteo disponible"
-        : "Estos son los " +
+      programData.giveaways.length > 0
+        ? programData.giveaways.length === 1
+          ? "Este es el " + programData.giveaways.length + " sorteo disponible"
+          : "Estos son los " +
             programData.giveaways.length +
             " sorteos disponibles"
+        : "No hay sorteos disponibles"
     );
     for (
       let giveaway = 0;
@@ -70,14 +74,21 @@ export function deleteGiveaway(giveawayNumber: number) {
 }
 
 export function enterGiveaway(enterGiveawayNumber: number) {
+  const user = programData.users.find(
+    (user) => user.email === programData.userEmail
+  );
+
   if (enterGiveawayNumber > programData.giveaways.length) {
     console.log("No existe este sorteo");
+  } else if (
+    programData.giveaways[enterGiveawayNumber - 1].participants.find(
+      (participant) => participant === user
+    )
+  ) {
+    console.log("Ya estás participando en el sorteo");
   } else {
-    const user = programData.users.find(
-      (user) => user.email === programData.userEmail
-    );
     if (user) {
-      programData.giveaways[enterGiveawayNumber].participants.push(user);
+      programData.giveaways[enterGiveawayNumber - 1].participants.push(user);
     }
     saveData();
   }
@@ -87,7 +98,7 @@ export function listUserGiveaways() {
   const arrayGiveaways: Giveaway[] = [];
   for (const giveaway of programData.giveaways) {
     for (const participant of giveaway.participants) {
-      if (participant.email == programData.userEmail) {
+      if (participant.email === programData.userEmail) {
         arrayGiveaways.push(giveaway);
       }
     }
