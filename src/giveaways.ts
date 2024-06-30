@@ -15,10 +15,20 @@ export function loginUser(email: string, password: string) {
   if (user) {
     programData.userEmail = email;
     if (user.email == "admin@admin.com") {
-      user.isAdmin = true;
+      programData.isAdmin = true;
     }
   } else {
     console.log("El usuario no coincide con los usuarios registrados");
     exitProcess(0);
   }
+}
+export function createGiveaway() {
+  const recoveredData = askUserNewGiveawayData();
+  const newGiveaway: Giveaway = {
+    name: recoveredData.giveawayName,
+    socialNetwork: recoveredData.giveawaySocialNetwork,
+    participants: [],
+  };
+
+  programData.giveaways.push(newGiveaway);
 }
