@@ -1,3 +1,4 @@
+import { off } from "node:process";
 import { askUser } from "./askUser.js";
 import { programData, saveData } from "./storage.js";
 
@@ -8,61 +9,61 @@ export function loginUser(email: string, password: string): void {
   const user = programData.users.find(
     (user) => user.email === email && user.password === password
   );
+
   if (user) {
     programData.userEmail = email;
-    if (user.email === "admin@admin.com") {
-      programData.isAdmin = true;
-    } else {
-      programData.isAdmin = false;
-    }
-    saveData();
+    if (
+      user.email === "admin@admin.com"
+        ? (programData.isAdmin = true)
+        : (programData.isAdmin = false)
+    )
+      saveData();
   } else {
     console.log("El usuario no coincide con los usuarios registrados");
     process.exit(0);
   }
 }
+
 export function createGiveaway(): void {
   const giveawayData = askUserNewGiveawayData();
+
   const newGiveaway: Giveaway = {
     name: giveawayData.giveawayName,
     socialNetwork: giveawayData.giveawaySocialNetwork,
     participants: [],
   };
+
   console.log(`Sorteo creado con éxito`);
 
   programData.giveaways.push(newGiveaway);
+
   saveData();
 }
 
 export function listGiveaways(): void {
-  if (!programData.giveaways) {
-    console.log("No hay sorteos disponibles");
-  } else {
-    console.log(
-      programData.giveaways.length > 0
-        ? programData.giveaways.length === 1
-          ? "Este es el " + programData.giveaways.length + " sorteo disponible"
-          : "Estos son los " +
-            programData.giveaways.length +
-            " sorteos disponibles"
-        : "No hay sorteos disponibles"
-    );
-    for (
-      let giveaway = 0;
-      giveaway < programData.giveaways.length;
-      giveaway++
-    ) {
+  switch (programData.giveaways.length) {
+    case 0:
+      console.log("No hay sorteos disponibles");
+      break;
+
+    case 1:
+      console.log("Este es el único sorteo disponible");
+      break;
+
+    default:
       console.log(
-        giveaway +
-          1 +
-          ". Sorteo de un " +
-          programData.giveaways[giveaway].name +
-          " en " +
-          programData.giveaways[giveaway].socialNetwork
+        `Estos son los ${programData.giveaways.length} sorteos disponibles`
       );
-    }
+      break;
   }
+
+  programData.giveaways.forEach((giveaway, index) => {
+    console.log(
+      `${index + 1}.Sorteo de un ${giveaway.name} en ${giveaway.socialNetwork}`
+    );
+  });
 }
+
 export function deleteGiveaway(giveawayNumber: number): void {
   if (giveawayNumber > programData.giveaways.length) {
     console.log("No existe este sorteo");
@@ -90,31 +91,43 @@ export function enterGiveaway(enterGiveawayNumber: number) {
     if (user) {
       programData.giveaways[enterGiveawayNumber - 1].participants.push(user);
     }
+    console.log("Inscrito con éxito al sorteo");
     saveData();
   }
 }
 
 export function listUserGiveaways(): void {
-  const arrayGiveaways: Giveaway[] = [];
+  const givawaysList: Giveaway[] = [];
+
   for (const giveaway of programData.giveaways) {
     for (const participant of giveaway.participants) {
       if (participant.email === programData.userEmail) {
-        arrayGiveaways.push(giveaway);
+        givawaysList.push(giveaway);
       }
     }
   }
 
-  console.log(
-    `Estás inscrito en los siguientes ${arrayGiveaways.length} sorteos`
-  );
-  for (let giveaway = 0; giveaway < arrayGiveaways.length; giveaway++) {
-    console.log(
-      giveaway +
-        1 +
-        ". Sorteo de un " +
-        programData.giveaways[giveaway].name +
-        " en " +
-        programData.giveaways[giveaway].socialNetwork
-    );
+  function giveawayFeedback(): void {
+    givawaysList.forEach((giveaway, index) => {
+      console.log(
+        `${index + 1}. Sorteo de ${giveaway.name} en ${giveaway.socialNetwork}`
+      );
+    });
+  }
+
+  switch (givawaysList.length) {
+    case 0:
+      console.log(`No estas inscrito en ningun sorteo`);
+      break;
+
+    case 1:
+      console.log(`Estás inscrito en este sorteo`);
+      giveawayFeedback();
+      break;
+
+    default:
+      console.log(`Estás inscrito en estos ${givawaysList.length} sorteos`);
+      giveawayFeedback();
+      break;
   }
 }
